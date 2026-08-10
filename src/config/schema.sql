@@ -1,9 +1,11 @@
 CREATE DATABASE veterinaria_go_prod;
 
--- DROP SCHEMA public CASCADE;
--- CREATE SCHEMA public;
--- GRANT ALL ON SCHEMA public TO postgres;
--- GRANT ALL ON SCHEMA public TO public;
+/*
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO public;
+*/
 
 CREATE TABLE persons( -- Tabla personas
 	id UUID DEFAULT gen_random_uuid(),
@@ -327,8 +329,55 @@ CREATE TABLE prescription_details( -- DETALLE DE RECETA MEDICA
 		ON DELETE RESTRICT
 );
 
+/*
+Tablas para manejer sistema
+*/
+CREATE TABLE roles(
+	id INT GENERATED ALWAYS AS IDENTITY,
+	name VARCHAR(30) NOT NULL,
+
+	CONSTRAINT pk_roles PRIMARY KEY (id),
+	CONSTRAINT uq_roles_name UNIQUE (name)
+);
+
+CREATE TABLE app_users(
+	id UUID DEFAULT gen_random_uuid(),
+	username VARCHAR(50) NOT NULL,
+	password_hash VARCHAR(255) NOT NULL,
+	person_id UUID NOT NULL, -- FK de PERSONAS CLIENTE DUEÑO DE MASCOTA O VETERINARIO
+	role_id INT NOT NULL, 
+	is_active BOOLEAN NOT NULL DEFAULT TRUE,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+	CONSTRAINT pk_app_users PRIMARY KEY (id),
+	CONSTRAINT chk_password_not_empty CHECK (TRIM(password_hash) <> ''),
+	CONSTRAINT uq_app_users_username UNIQUE (username),
+	CONSTRAINT uq_app_users_role UNIQUE (role_id),
+	CONSTRAINT uq_app_users_person UNIQUE (person_id), -- una persona = máximo 1 cuenta
+
+	CONSTRAINT fk_app_users_person
+		FOREIGN KEY (person_id)
+		REFERENCES persons (id)
+		ON DELETE RESTRICT
+		ON UPDATE CASCADE,
+
+	CONSTRAINT fk_app_users_role
+		FOREIGN KEY (role_id)
+		REFERENCES roles (id)
+		ON DELETE RESTRICT
+		ON UPDATE CASCADE
+);
 
 
+
+SELECT * FROM app_users;
+
+INSERT INTO persons (full_name, email, phone_number) VALUES
+('Ana Gómez', 'ana.gomez@email.com', '+56912345678'),
+('Carlos Mendoza', 'carlos_m95@gmail.com', '56987654321'),
+('María José Elena', 'maria.leona@empresa.cl', '+123456789');
+
+SELECT * FROM persons;
 
 
 

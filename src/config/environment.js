@@ -6,10 +6,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const result = dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 // console.log('Resultado dotenv:', result);
 
+
 // Objeto de condiguracion 
 const environment = {
     port: process.env.PORT || 3000,
     nodeEnv: process.env.NODE_ENV || 'development',
+    jwtSecret: process.env.JWT_SECRET,
     db: {
         user: process.env.DB_USER,
         host: process.env.DB_HOST,

@@ -1,26 +1,26 @@
-import pg from 'pg';
+import { Sequelize } from 'sequelize';
 import environment from './environment.js';
 
-const { Pool } = pg
-
-const pool = new Pool({
-    user: environment.db.user,
-    host: environment.db.host,
-    database: environment.db.database,
-    password: environment.db.password,
-    port: environment.db.port,
-});
+const sequelize = new Sequelize(
+    environment.db.database,
+    environment.db.user,
+    environment.db.password,
+    {
+        host: environment.db.host,
+        port: environment.db.port,
+        dialect: 'postgres',
+        logging: false,
+    }
+);
 
 async function checkConnection() {
     try {
-        const client = await pool.connect();
-        console.log('Conexion con Postgres exitosa');
-        client.release()
+        await sequelize.authenticate();
+        console.log('Conexion con Postgres (SEQUELIZE) exitosa');
     } catch (error) {
         console.error('Error conectando PostgreSQL:', error.message);
     }
 }
 
-
-export {checkConnection};
-export default pool;
+export { checkConnection };
+export default sequelize;

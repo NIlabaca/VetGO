@@ -2,31 +2,36 @@ import express from 'express';
 import routes from './routes/index.js';
 import errorHandler from './middlewares/error.middleware.js'
 import loggerMiddleware from './middlewares/loggers.middleware.js'; //MIDDLEWARE DE LOGS
-
-//
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { engine } from 'express-handlebars';
+import viewRoutes from './routes/view.routes.js'
 
+//
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Crea la instancia de express
 const app = express();
 
-// -- Middlewares globales --
-// permite que express interprete JSON
-app.use(loggerMiddleware);
-app.use(express.json());
 
+// Configutacion de handlebars
+app.engine('hbs', engine({ extname: '.hbs', defaultLayout:'main' ,partialsDir: path.join(__dirname, 'views/partials'),}));
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
+
+// -- Middlewares globales --
+app.use(loggerMiddleware);
+app.use(express.json()); /*permite que express interprete JSON*/
+app.use(express.urlencoded({ extended: true })); /* extrae los datos enviados desde el html a un objryo JS */
+app.use(express.static(path.join(__dirname, 'public'))); 
 
 //--Rutas--
-//Bootstrap 
-
-// Todas definidas de index.js
+// Rutas API
 app.use('/api', routes); 
 
-// Rutas estaticas y publicas
+// Rutas de vistas 
+app.use('/', viewRoutes);
 
-app.use(express.static(path.join(__dirname, 'public')));
 
 
 // --- Manejo de Errores ---
