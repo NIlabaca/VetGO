@@ -15,7 +15,7 @@ API REST desarrollada con Node.js, base para el sistema de gestion de pacientes 
 * **Gestion de Configuracion :** [dotenv](https://www.npmjs.com/package/dotenv)
 * **JWT :** mecanismo de autentifiacion segura con tokens.
 * **Bcrypt** – Librería para el encriptado contraseñas.
- **Express-Handlebars** – Motor de plantillas dinamica desde el servidor.
+* **Express-Handlebars** – Motor de plantillas dinamica desde el servidor.
 * **Base de datos :** PostgreSQL
 
 ## Caracteristicas

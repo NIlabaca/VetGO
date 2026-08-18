@@ -92,6 +92,7 @@ personForm.addEventListener('submit', async (event) => {
     const response = await fetch(url, { method, headers: authHeaders, body });
 
     if (response) {
+       
         personModal.hide();
         loadPersons();
     } else {

@@ -9,10 +9,11 @@ export default function errorHandler(err, req, res, next) {
     // Si el error trae un status propio (ej: err.status = 404), se usa ese;
     // si no, se asume error interno del servidor (500)
     const statusCode = err.status || 500;
+    const message = err.isOperational ?  err.message: 'Error interno del servidor';
 
     // Respuesta uniforme en formato JSON para cualquier error de la API
     res.status(statusCode).json({
         status: 'ERROR',
-        message: err.message || 'Error interno del servidor',
+        message,
     });
 }
